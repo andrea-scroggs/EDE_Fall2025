@@ -30,7 +30,7 @@ Enter answers to the questions just below the >Answer: prompt.
 
 3. Are there any components of the course about which you feel apprehensive?
 
-> Answer: I do not feel aprehensive about taking this course because I konw that, even if I struggle, I know that I can get help and talk with the professors or TAs. 
+> Answer: I do not feel apprehensive about taking this course nor of any of the components of this course because I know that, even if I struggle, I can get help and talk with the professors, TAs, or my classmates. 
 
 
 ## 2) GitHub
