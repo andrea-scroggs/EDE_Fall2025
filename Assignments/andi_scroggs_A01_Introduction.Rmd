@@ -1,6 +1,6 @@
 ---
 title: "Assignment 1: Introduction"
-author: "Student Name"
+author: Andi Scroggs
 output: pdf_document
 ---
 
@@ -22,22 +22,22 @@ Enter answers to the questions just below the >Answer: prompt.
 
 1. What are your previous experiences with data analytics, R, and Git? Include both formal and informal training.
 
-> Answer: 
+> Answer: My experience with data analytics extends to an introductory course in undergrad and some limited use during research projects. I used R thoughout my course and throughout my research. I know the basics from the course and I taught myself what I needed to know for my research. I know how to make basic plots and tables but that is the extent of my knowledge. I have never used Git before. 
 
 2. Are there any components of the course about which you feel confident?
 
-> Answer: 
+> Answer: I feel confident that I will learn a lot from this course and that it will challenge me. 
 
 3. Are there any components of the course about which you feel apprehensive?
 
-> Answer: 
+> Answer: I do not feel aprehensive about taking this course because I konw that, even if I struggle, I know that I can get help and talk with the professors or TAs. 
 
 
 ## 2) GitHub
 
 Provide a link below to your forked course repository in GitHub. Make sure you have pulled all recent changes from the course repository and that you have updated your course README file, committed those changes, and pushed them to your GitHub account. 
 
-> Answer: 
+> Answer: https://github.com/andrea-scroggs/EDE_Fall2025
 
 ## 3) Knitting
 When you have completed this document, click the `knit` button.This should produce a PDF copy of your markdown document. Submit this PDF to Canvas 
