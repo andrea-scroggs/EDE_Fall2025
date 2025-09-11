@@ -94,11 +94,16 @@ mean(temps_F)
   #create a new vector that is for the temperatures minus the average
 difference_F <- c(temps_F-80.8)
 difference_F
+  #can also be done without creating a new vector
+temps_F-mean(temps_F)
 
 #Subtract 32 and multiply by 5/9ths to create a vector in Celsius
-  #create a new vector and use parenthesis to ensure that the function is calculated in the correct order
+  #create a new vector and use parenthesis to ensure that the function is calculated in the correct      order 
 temps_C <- c((temps_F-32)*(5/9))
 temps_C
+
+  #do not have to make a new vector 
+(temps_F-32)*(5/9)
 
 ```
 
@@ -111,14 +116,16 @@ matrix1 <- matrix(1:20, nrow = 5,ncol = 4) #
 matrix1
 #matrix1 has __ rows and __ columns
 
-matrix2 <- matrix(1:20, nrow = 5, ncol = 4, byrow = TRUE) #
+matrix2 <- matrix(1:20, nrow = 5, ncol = 4, byrow = TRUE) 
+# need to specify whether byrow is true or false
+
 matrix2
 #matrix2 has __ rows and __ columns
 
 matrix3 <- matrix(
   data = 1:20, 
-  nrow = 5, 
-  ncol = 4, 
+  nrow = 5, # rows go first [row, column]
+  ncol = 4, # columns go second
   byrow = TRUE, # return after comma continues the line
   dimnames = list(
     c("uno", "dos", "tres", "quatro", "cinco"),
@@ -126,6 +133,7 @@ matrix3 <- matrix(
     )
   ) 
 
+# write code on multiple lines so that code does not go off the page!!!!
 ```
 
 ### Matrix Operations
@@ -134,15 +142,15 @@ Add comments in the code chunk below to indicate type of vectors created and wha
 
 matrix1[4, 1] #
 
-matrix1[4,  ] #
+matrix1[4,  ] # this gives you the fourth row of values
 
-matrix1[ , 3] #
+matrix1[ , 3] # this gives you the third column of values
 
-matrix1[c(12, 14)] #
+matrix1[c(12, 14)] # this gives you the 12th and 14th item in the matrix
 
-matrix1[c(12:14)] #
+matrix1[c(12:14)] # this gives you everything between those numbers
 
-matrix1[2:4, 1:3] #
+matrix1[2:4, 1:3] # this gives you a smaller matrix of the values you are asking for
 
 #Create a vector of 6 values
 values = c(1, 26, 24, 68, 3, 44)
@@ -169,7 +177,10 @@ matrix4['R2','C1']
 ### Exercise 1b: Matrices
 Compute the mean of column "C2" in matrix4. (Should be 14.5)
 ```{r Matrix Exercise}
+# leave the row space blank because we want the whole column
+matrix4[ ,'C2']
 
+mean(matrix4[ ,'C2'])
 ```
 
 
@@ -195,17 +206,20 @@ list1 <- list(
 #
 list1
 
-#
+# 
 list1$age
 
 #
 names(list1)
 
-#
+# gives the first two items on the list
 list1[1:2]
 
-#
+# update values on a list and rename items
 list1$name = "Janelle"
+
+#you can add items to a list as well
+list1$pet = "Biscuit"
 
 #
 list1[[4]] = 44
@@ -217,16 +231,17 @@ list1[[4]] = 44
 # Data Frames ----
 #Create three vectors of equal length
 d <- c(1, 2, 3, 4) # What type of vector?
-e <- c("red", "white", "red", NA) # What type of vector?
+e <- c("red", "white", "red", NA) # What type of vector? 
+  #NA is like a placeholder
 f <- c(TRUE, TRUE, TRUE, FALSE) # What type of vector?
 
-#Combine the vectors into a dataframe
+#Combine the vectors into a data frame - each column is a vector
 dataframe1 <- data.frame(d,e,f) 
 
 #Set the column names & View
-names(dataframe1) <- c("ID","Color","Passed"); View(dataframe1) # 
+names(dataframe1) <- c("ID","Color","Passed"); View(dataframe1) # compound statement created by a semi-colon
 
-#Add a new column to the dataframe
+#Add a new column to the data frame and give it new values
 dataframe1$month <- c('Jan','Feb', 'Mar', 'Apr')
 
 ```
@@ -234,7 +249,7 @@ dataframe1$month <- c('Jan','Feb', 'Mar', 'Apr')
 
 ### Dataframe operations
 ```{r Dataframe Operations}
-#Extract a column from the dataframe f
+#Extract a column from the data frame f
 dataframe1$Color
 
 #Extract a row
