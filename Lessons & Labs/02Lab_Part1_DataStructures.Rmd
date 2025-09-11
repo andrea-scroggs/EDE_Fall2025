@@ -69,6 +69,7 @@ vector1 * vector4
 vector1 * 10
 
 #
+# to make into upper case letters
 toupper(vector2) 
 
 #
@@ -83,16 +84,21 @@ Find a 5-day forecast of temperatures (Fahrenheit) for Durham, North Carolina. C
 ```{r Vector Exercise}
 
 #Assign to the variable 'temps_F' a vector of high temperatures in F
-
+temps_F <- c(80, 81, 83, 83, 77)
+temps_F
 
 #What is the average of these temperatures 
-
+mean(temps_F)
 
 #Compute the difference between each temperature and the average calculated above
-
+  #create a new vector that is for the temperatures minus the average
+difference_F <- c(temps_F-80.8)
+difference_F
 
 #Subtract 32 and multiply by 5/9ths to create a vector in Celsius
-
+  #create a new vector and use parenthesis to ensure that the function is calculated in the correct order
+temps_C <- c((temps_F-32)*(5/9))
+temps_C
 
 ```
 
