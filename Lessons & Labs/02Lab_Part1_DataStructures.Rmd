@@ -230,10 +230,10 @@ list1[[4]] = 44
 ```{r Creating data frames}
 # Data Frames ----
 #Create three vectors of equal length
-d <- c(1, 2, 3, 4) # What type of vector?
-e <- c("red", "white", "red", NA) # What type of vector? 
+d <- c(1, 2, 3, 4) # What type of vector? numberical
+e <- c("red", "white", "red", NA) # What type of vector? character
   #NA is like a placeholder
-f <- c(TRUE, TRUE, TRUE, FALSE) # What type of vector?
+f <- c(TRUE, TRUE, TRUE, FALSE) # What type of vector? logical
 
 #Combine the vectors into a data frame - each column is a vector
 dataframe1 <- data.frame(d,e,f) 
