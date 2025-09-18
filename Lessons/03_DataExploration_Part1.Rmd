@@ -77,7 +77,7 @@ library(tidyverse)
 
 Question: What happens in the console when you load a package?
 
-> Answer: 
+> Answer: When loading a package, it states in the console which objects are masked from the package you are trying to load. It also can show errors/conflicts of certain packages and the objects that are conflicting-R just chooses one for you of the conflicting objects/commands.
 
 ---
 
@@ -123,7 +123,7 @@ Commons functions to import datasets and store as data frames are *read.table()*
 ```{r Importing data}
 # Absolute file path (not recommended)
 #read.csv(
-#  file="/home/guest/EDE_Fall2024/Data/Raw/USGS_Site02085000_Flow_Raw.csv",
+#  file="/home/guest/ENVIRON 872/EDE_Fall2025/Data/Raw/USGS_Site02085000_Flow_Raw.csv",
 #  stringsAsFactors = TRUE)
 
 # Relative file path (friendly for users regardless of machine)
@@ -145,11 +145,18 @@ Prior to running this, reset your workspace (Session->Restart R) to ensure it ru
 
 ```{r Setup}
 # Load packages
+library(dplyr)
+library(ggplot2)
+library(here)
+library(tidyverse)
 
 # Confirm working directory
+getwd()
+here()
 
-# Load the USGS flow data into a data frame
-
+# Load the USGS flow data into a data "frame
+USGS.flow.data <- read.csv(file = here("./Data/Raw/USGS_Site02085000_Flow_Raw.csv"), 
+                           stringsAsFactors = TRUE)
 ```
 
 ---
@@ -161,13 +168,14 @@ Prior to analyzing your dataset, take a moment to understand your data. Where di
 
 Take a moment to read through the README file associated with the USGS dataset on discharge at the Eno River. Where can you find this file? How does the placement and information found in this file relate to the best practices for reproducible data analysis?
 
-> ANSWER: 
+> ANSWER: The README file is under the Metadata folder. The information in the document tells the reader the details on the methods used to collect the data, where it was collected, and when. It gives the necessary information needed if the study was to be reproduced and new data was collected.
 
 ### Examine properties of your dataset
 Next, have a look at your dataset. Browse your data in RStudio's viewer. Have a look at the structure of your data. Consider renaming columns. 
 
 ```{r Exploring data}
-View(USGS.flow.data)
+# View(USGS.flow.data)
+
 # Alternate option: click on data frame in Environment tab
 
 class(USGS.flow.data)
@@ -181,15 +189,22 @@ colnames(USGS.flow.data) <- c("agency_cd", "site_no", "datetime",
                               "gage.height.max", "gage.height.max.approval", 
                               "gage.height.min", "gage.height.min.approval", 
                               "gage.height.mean", "gage.height.mean.approval")
+#short for structure
 str(USGS.flow.data)
+#short for dimensions
 dim(USGS.flow.data)
 length(USGS.flow.data)
 
+#to display
 head(USGS.flow.data)
+#display first 10 rows
 head(USGS.flow.data, 10)
+#display the last 5 rows
 tail(USGS.flow.data, 5)
+#want to see rows 30000:30005 and columns 3, 8, and 14
 USGS.flow.data[30000:30005, c(3, 8, 14)]
 
+#class of specific columns
 class(USGS.flow.data$datetime)
 class(USGS.flow.data$discharge.mean)
 class(USGS.flow.data$gage.height.mean)
@@ -199,7 +214,7 @@ summary(USGS.flow.data)  #could point to column only with $
 ```
 
 What happened to blank cells in the spreadsheet when they were imported into R?
-> Answer: 
+> Answer: The value of NA was inserted into the column
 
 ### Identify and address issues: Missing Data
 
@@ -236,7 +251,7 @@ str(USGS.flow.data)
 
 With the `read.csv()`, R guesses at a columns data type by looking at the values in the column. But it doesn't always guess correctly. Sometimes we have to overrule R's guess. We can do that after importing data into a dataframe through various functions.
 
-The code chunk below shows how we coerce R to set `site_no` to be a *factor*, not an integer. 
+The code chunk below shows how we coerce R to set `site_no` to be a *factor*, not an integer. --> as.factor()
 
 ```{r}
 USGS.flow.data$site_no <- as.factor(USGS.flow.data$site_no)
@@ -244,11 +259,13 @@ str(USGS.flow.data)
 ```
 
 Alternatively, we can tell R to import it as a factor when we read the data in 
+  *this is a better method*
 
 ```{r}
 USGS.flow.data2  <- read.csv(
   file = here("./Data/Raw/USGS_Site02085000_Flow_Raw.csv"),
-  stringsAsFactors = TRUE) 
+  stringsAsFactors = TRUE,
+  colClasses = c('site_no' = 'factor')) 
 ```
 
 
@@ -256,7 +273,7 @@ USGS.flow.data2  <- read.csv(
 
 R will often import dates as factors or characters rather than dates. To fix, this we need to tell R that it is looking at dates. We also need to specify the format the dates are in. By default, if you don't provide a format, R will attempt to use %Y-%m-%d or %Y/%m/%d as a default. Note: if you are working collaboratively in an international setting, using a year-month-day format in spreadsheets is the least ambiguous of date formats. Make sure to check whether month-day-year or day-month-year is used in an ambiguously formatted spreadsheet.
 
-Formatting of dates in R: 
+Formatting of *dates* in R: 
 
 %d  day as number (0-31)
 %m  month (00-12, can be e.g., 01 or 1)
@@ -278,11 +295,11 @@ help(as.Date)
 # (code must be uncommented)
 today <- Sys.Date()
 format(today, format = "%B")
-#format(today, format = "")
-#format(today, format = "")
-#format(today, format = "")
+#format(today, format = "%A")
+#format(today, format = "%y")
+#format(today, format = "%m")
 
-USGS.flow.data$datetime <- as.Date(USGS.flow.data$datetime, format = "%m/%d/%y") 
+USGS.flow.data$datetime <- as.Date(USGS.flow.data$datetime, format = "%m/%d/%y") #put in date in the format of the original data, including how it is separated
 ```
 
 Note that for every date prior to 1969, R has assigned the date in the 2000s rather than the 1900s. This can be fixed with an `ifelse` statement inside a function. Run through the code below and write what is happening in the comment above each line.
