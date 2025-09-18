@@ -372,3 +372,4 @@ write.csv(
 -   Spaces in column names will be replaced with a `.` when imported into R. When designing spreadsheets, avoid spaces in column headers. 
 
 -   Avoid symbols in column headers. This can cause issues when importing into R.
+
