@@ -63,6 +63,7 @@ You need to load packages each time you start (or restart) an R coding session; 
 #install.packages('ggplot')
 #install.packages('here')
 
+
 #Load the tidyverse, ggplot2, and here package
 library(dplyr)
 library(ggplot2)
