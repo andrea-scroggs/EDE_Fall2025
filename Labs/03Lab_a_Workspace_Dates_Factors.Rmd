@@ -357,7 +357,7 @@ usgs_flow_data$month <- factor(usgs_flow_data$month,
   labels = month.abb)
 
 #Plot
-ggplot(usgs_flow_data, aes(x = month )) +
+ggplot(usgs_flow_data, aes(x = month)) +
   geom_bar() + 
   scale_x_discrete(drop=FALSE)
 
