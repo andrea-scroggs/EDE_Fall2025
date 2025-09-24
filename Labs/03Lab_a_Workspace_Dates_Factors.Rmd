@@ -145,6 +145,7 @@ str_today2 <- "Sep 18, 2025"
 #Since the format is month-day-year we will use function mdy()
 date_obj_today <- mdy(str_today2)
 date_obj_today
+class(date_obj_today)
 
 #Ex_3 - on your own...
 str_juneteenth <- "19 June 1865"
@@ -222,6 +223,7 @@ dim(sites)
 #Convert date column to date object
 sites$date <- ymd_hms(sites$date)
 
+class(sites$date)
 ```
 
 
