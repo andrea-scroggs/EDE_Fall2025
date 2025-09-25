@@ -19,6 +19,8 @@ Today we will work with a dataset from the [North Temperate Lakes Long-Term Ecol
 Opening discussion: why might we be interested in long-term observations of temperature, oxygen, and light in lakes?
 
 > Add notes here: 
+vignette('dplyr') - give information on the package; explains the bigger picture
+cheat sheets - helpful as well; through help button at the top
 
 ```{r workspace setup, message = FALSE}
 #Install packages
@@ -71,7 +73,7 @@ summary(NTL.phys.data$lakename)
 NTL.phys.data.PeterPaul <- 
   filter(NTL.phys.data, lakename %in% c("Paul Lake", "Peter Lake"))
 
-# Choose a range of conditions of a numeric or integer variable
+# Choose a range of conditions of a numeric or integer variable - a colon means between
 summary(NTL.phys.data$daynum)
 NTL.phys.data.JunethruOctober <- filter(NTL.phys.data, daynum %in% c(152:304))
 ```
@@ -80,11 +82,13 @@ NTL.phys.data.JunethruOctober <- filter(NTL.phys.data, daynum %in% c(152:304))
 # Exercise 1: 
 # filter NTL.phys.data for the year 1999
 # what code do you need to use, based on the class of the variable?
-
+class(NTL.phys.data$year4)
+NTL.phys.data.1999 <- filter(NTL.phys.data, year4 == 1999)
 
 # Exercise 2: 
 # filter NTL.phys.data for Tuesday Lake from 1990 through 1999.
-
+NTL.phys.data.TL <- filter(NTL.phys.data, lakename == "Tuesday Lake",
+                           year4 %in% 1990:1999)
 
 ```
 Question: Why don't we filter using row numbers?
@@ -104,16 +108,27 @@ Let's say we want to take our raw dataset (NTL.phys.data), *then* filter the dat
 #Example using pipes to wrangle data: 
 #Add pipes in the correct place below
 NTL.phys.data.processed <- 
-  NTL.phys.data
-  filter(lakename == "Paul Lake" | lakename == "Peter Lake") 
-  select(lakename, sampledate:temperature_C) 
+  NTL.phys.data %>%
+  filter(lakename == "Paul Lake" | lakename == "Peter Lake") %>%
+  select(lakename, sampledate:temperature_C) %>%
   mutate(temperature_F = (temperature_C*9/5) + 32)
 
 #Exercise 3: Using a pipe filter NTL.phys.data for Tuesday Lake from 1990 
 # through 1999 only for July.
+NTL.phys.data.TL.Jul90.99 <- NTL.phys.data %>%
+  mutate(month = month(NTL.phys.data$sampledate)) %>%
+  filter(lakename == "Tuesday Lake", 
+         year4 %in% 1990:1999, 
+         month == 7)
 
+# OR
+NTL.phys.data.TL.Jul90.99 <- NTL.phys.data %>%
+  filter(lakename == "Tuesday Lake", 
+         year4 %in% 1990:1999, 
+         month(sampledate) == 7)
   
-
+  
+class(NTL.phys.data$sampledate)
 #Exercise 4: Using the data from part 3, a pipe, and the summarize() function, 
 # find the mean surface water temperature. 
 # (hint: you will need to filter for depth==0). 
@@ -135,7 +150,7 @@ For gather we will use `pivot_longer` and for spread we will use `pivot_wider`.
 
 
 
-#Exercise 6: Spread temperatureC into more than one column based on the depth.
+#Exercise 6: Spread temperature_C into more than one column based on the depth.
 
 
 

@@ -39,11 +39,16 @@ library(here)
 getwd()
 
 #1c 
-
+EPAair_O3_NC2018 <- read.csv(file = here("Data/Raw/EPAair_O3_NC2018_raw.csv"))
+EPAair_O3_NC2019 <- read.csv(file = here("Data/Raw/EPAair_O3_NC2019_raw.csv"))
+EPAair_PM25_NC2018 <- read.csv(file = here("Data/Raw/EPAair_PM25_NC2018_raw.csv"))
+EPAair_PM25_NC2019 <- read.csv(file = here("Data/Raw/EPAair_PM25_NC2019_raw.csv"))
 
 #2 
-
-
+dim(EPAair_O3_NC2018)
+dim(EPAair_O3_NC2019)
+dim(EPAair_PM25_NC2018)
+dim(EPAair_PM25_NC2019)
 ```
 
 >All four datasets should have the same number of columns but unique record counts (rows). Do your datasets follow this pattern?
