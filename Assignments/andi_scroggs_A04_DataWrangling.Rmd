@@ -1,6 +1,6 @@
 ---
 title: "Assignment 4: Data Wrangling (Fall 2025)"
-author: "Student Name"
+author: Andi Scroggs
 output: pdf_document
 geometry: margin=2.54cm
 ---
@@ -31,10 +31,15 @@ This exercise accompanies the lessons in Environmental Data Analytics on Data Wr
 
 ```{r setup, message = FALSE}
 #1a 
+library(tidyverse)
+library(lubridate)
+library(here)
 
-#1b 
+#1b
+getwd()
 
 #1c 
+
 
 #2 
 
