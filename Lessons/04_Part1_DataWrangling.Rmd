@@ -114,12 +114,13 @@ class(NTL.phys.data$year4)
 
 # Exercise: 
 # filter NTL.phys.data for Tuesday Lake from 1990 through 1999.
-
+NTL.phys.data.TL1990.1999 <- filter(NTL.phys.data, lakename == "Tuesday Lake", 
+                                    year4 >= "1990", year4 <= "1999")
 
 ```
 Question: Why don't we filter using row numbers?
 
-> Answer: 
+> Answer: Because the data may not be in order and we would then have to pick out and look at every row to see which ones match the conditions we want. It would not be efficient. 
 
 ### Arrange
 
@@ -132,7 +133,8 @@ NTL.phys.data.depth.descending <- arrange(NTL.phys.data, desc(depth))
 # Exercise: 
 # Arrange NTL.phys.data by temperature, in descending order. 
 # Which dates, lakes, and depths have the highest temperatures?
-
+NTL.phys.data.temp.descending <- arrange(NTL.phys.data,
+                                         desc(temperature_C))
 
 ```
 ### Select
@@ -140,7 +142,8 @@ NTL.phys.data.depth.descending <- arrange(NTL.phys.data, desc(depth))
 Selecting allows us to choose certain columns (variables) in our dataset.
 
 ```{r selecting columns}
-NTL.phys.data.temps <- select(NTL.phys.data, lakename, sampledate:temperature_C)
+NTL.phys.data.temps <- select(NTL.phys.data, lakename,
+                              sampledate:temperature_C)
 
 ```
 ### Mutate
@@ -148,8 +151,9 @@ NTL.phys.data.temps <- select(NTL.phys.data, lakename, sampledate:temperature_C)
 Mutating allows us to add new columns that are functions of existing columns. Operations include addition, subtraction, multiplication, division, log, and other functions.
 
 ```{r mutating data}
-NTL.phys.data.temps <- mutate(NTL.phys.data.temps, temperature_F = (temperature_C*9/5) + 32)
-
+NTL.phys.data.temps <- mutate(NTL.phys.data.temps, 
+                              temperature_F = (temperature_C*9/5)
+                              + 32)
 ```
 
 ## Lubridate
