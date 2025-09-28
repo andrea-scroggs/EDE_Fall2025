@@ -32,6 +32,7 @@ This exercise accompanies the lessons in Environmental Data Analytics on Data Wr
 ```{r setup, message = FALSE}
 #1a 
 library(tidyverse)
+library(dplyr)
 library(lubridate)
 library(here)
 
