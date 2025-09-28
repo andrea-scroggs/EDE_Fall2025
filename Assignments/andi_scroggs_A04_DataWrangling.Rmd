@@ -64,18 +64,72 @@ dim(EPAair_PM25_NC2019)
 
 6. Save all four processed datasets in the Processed folder. Use the same file names as the raw files but replace "raw" with "processed".
 
-```{r questions 3 thru 4}
-#3
+```{r questions 3 thru 6}
+class(EPAair_O3_NC2018$Date)
 
+#3
+EPAair_O3_NC2018$Date <- as.Date(EPAair_O3_NC2018$Date,
+                                 format = '%m/%d/%Y')
+class(EPAair_O3_NC2018$Date)
+
+EPAair_O3_NC2019$Date <- as.Date(EPAair_O3_NC2019$Date,
+                                 format = '%m/%d/%Y')
+class(EPAair_O3_NC2019$Date)
+
+EPAair_PM25_NC2018$Date <- as.Date(EPAair_PM25_NC2018$Date,
+                                 format = '%m/%d/%Y')
+class(EPAair_PM25_NC2018$Date)
+
+EPAair_PM25_NC2019$Date <- as.Date(EPAair_PM25_NC2019$Date,
+                                 format = '%m/%d/%Y')
+class(EPAair_PM25_NC2019$Date)
 
 #4
-
-
+EPAair_O3_NC2018.subset <- select(EPAair_O3_NC2018, 
+                                  Date, DAILY_AQI_VALUE, 
+                                  Site.Name, AQS_PARAMETER_DESC, 
+                                  COUNTY, SITE_LATITUDE, 
+                                  SITE_LONGITUDE)
+EPAair_O3_NC2018.subset$Date <- as.Date(EPAair_O3_NC2018.subset$Date,
+                                 format = '%Y-%m-%d')
+EPAair_O3_NC2019.subset <- select(EPAair_O3_NC2019, 
+                                  Date, DAILY_AQI_VALUE, 
+                                  Site.Name, AQS_PARAMETER_DESC, 
+                                  COUNTY, SITE_LATITUDE, 
+                                  SITE_LONGITUDE)
+EPAair_O3_NC2019.subset$Date <- as.Date(EPAair_O3_NC2019.subset$Date,
+                                 format = '%Y-%m-%d')
+EPAair_PM25_NC2018.subset <- select(EPAair_PM25_NC2018, 
+                                  Date, DAILY_AQI_VALUE, 
+                                  Site.Name, AQS_PARAMETER_DESC, 
+                                  COUNTY, SITE_LATITUDE, 
+                                  SITE_LONGITUDE)
+EPAair_PM25_NC2018.subset$Date <- as.Date(EPAair_PM25_NC2018.subset$Date,
+                                 format = '%Y-%m-%d')
+EPAair_PM25_NC2019.subset <- select(EPAair_PM25_NC2019, 
+                                  Date, DAILY_AQI_VALUE, 
+                                  Site.Name, AQS_PARAMETER_DESC, 
+                                  COUNTY, SITE_LATITUDE, 
+                                  SITE_LONGITUDE)
+EPAair_PM25_NC2019.subset$Date <- as.Date(EPAair_PM25_NC2019.subset$Date,
+                                 format = '%Y-%m-%d')
 #5
+EPAair_PM25_NC2018.subset$AQS_PARAMETER_DESC <- 'PM2.5'
 
+EPAair_PM25_NC2019.subset$AQS_PARAMETER_DESC <- 'PM2.5'
 
 #6
+write.csv(EPAair_O3_NC2018.subset, row.names = FALSE, 
+          file = "./Data/Processed/EPAair_O3_NC2018_processed.csv")
 
+write.csv(EPAair_O3_NC2019.subset, row.names = FALSE, 
+          file = "./Data/Processed/EPAair_O3_NC2019_processed.csv")
+
+write.csv(EPAair_PM25_NC2018.subset, row.names = FALSE, 
+          file = "./Data/Processed/EPAair_PM25_NC2018_processed.csv")
+
+write.csv(EPAair_PM25_NC2019.subset, row.names = FALSE, 
+          file = "./Data/Processed/EPAair_PM25_NC2019_processed.csv")
 ```
 
 
@@ -108,19 +162,40 @@ dim(EPAair_PM25_NC2019)
 
 ```{r questions 7 thru 11}
 #7 
-
+EPAair_O3_PM25_NC1819 <- rbind(EPAair_O3_NC2018.subset,
+                               EPAair_O3_NC2019.subset,
+                               EPAair_PM25_NC2018.subset,
+                               EPAair_PM25_NC2019.subset) %>%
+  mutate(Date = as.Date(Date))
 
 #8 
 
+EPAair_O3_PM25_NC1819_filtered <- EPAair_O3_PM25_NC1819 %>%
+  filter(Site.Name %in% c("Linville Falls", "Durham Armory",
+                          "Leggett", "Hattie Avenue",
+                          "Clemmons Middle", "Mendenhall School", 
+                          "Frying Pan Mountain", 
+                          "West Johnston Co.", "Garinger High School", 
+                          "Castle Hayne", "Pitt Agri. Center", 
+                          "Bryson City", "Millbrook School")) %>%
+  mutate(Date = as.Date(Date)) %>% 
+  group_by(Date, Site.Name, AQS_PARAMETER_DESC, COUNTY) %>%
+  summarise(AQI_VALUE = mean(DAILY_AQI_VALUE, na.rm = TRUE),
+              LATITUDE = mean(SITE_LATITUDE, na.rm = TRUE),
+              LONGITUDE = mean(SITE_LONGITUDE, na.rm = TRUE), 
+            .groups = "drop") %>%
+ mutate(Month = month(Date), Year = year(Date))
 
 #9
-
+EPAair_O3_PM25_NC1819_tidy <- EPAair_O3_PM25_NC1819_filtered %>%
+  pivot_wider(names_from = AQS_PARAMETER_DESC,
+              values_from = AQI_VALUE)
 
 #10
-
+dim(EPAair_O3_PM25_NC1819_tidy)
 
 #11
-
+write.csv(EPAair_O3_PM25_NC1819_tidy, "EPAair_O3_PM25_NC1819_Processed.csv", row.names = FALSE)
 
 ```
 
@@ -134,15 +209,20 @@ dim(EPAair_PM25_NC2019)
 ```{r questions 12 and 13}
 
 #12
-
+EPAair_O3_PM25_NC1819_summary <- 
+  EPAair_O3_PM25_NC1819_tidy %>%
+  group_by(Site.Name, Month, Year) %>%
+  summarise(mean_Ozone = mean(Ozone, na.rm = TRUE),
+            mean_PM2.5 = mean(PM2.5),
+            .groups = "drop") %>%
+  drop_na(mean_Ozone)
 
 #13
-
-
+dim(EPAair_O3_PM25_NC1819_summary)
 
 ```
 
 14. Why did we use the function `drop_na` rather than `na.omit`? Hint: replace `drop_na` with `na.omit` in part 12 and observe what happens with the dimensions of the summary date frame.
 
-> Answer: 
+> Answer: 'na.omit' removed more rows of data than 'drop_na' when inserted into the code. This is because 'na.omit' removes every row with an NA within the entire data frame, while 'drop_na' only removes NAs from the specified column. 
 
