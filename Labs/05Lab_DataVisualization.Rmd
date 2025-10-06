@@ -109,20 +109,42 @@ class(PeterPaul.chem.nutrients$month)
 unique(PeterPaul.chem.nutrients$month)
 
 #Plot how many Lake observations occur each month
-
+PeterPaul.chem.nutrients %>%
+  ggplot() +
+  geom_bar(aes(x = month))
 
 #Convert month to a factor -- with 12 levels, labelled with month names
 PeterPaul.chem.nutrients$month <- 
 
 #Try again: Plot how many Lake observations occur each month
 
+  # Convert month to a factor --- w/ 12 levels and labeling with month names
+  # factor(PeterPaul.chem.nutrients$month, levels = 1:12, labels = month.abb)
+ggplot(PeterPaul.chem.nutrients, 
+       aes(x = factor(month,
+                      levels = 1:12,
+                      labels = month.abb))) + 
+         geom_bar()
 
 #Alter to include missing months
-
+ggplot(PeterPaul.chem.nutrients, 
+       aes(x = factor(month,
+                      levels = 1:12,
+                      labels = month.abb))) +
+  scale_x_discrete(drop = FALSE) +
+  geom_bar()
 
 #Tidy up the code
+plot1 <- PeterPaul.chem.nutrients %>%
+  ggplot(aes(x = factor(month, 
+                        levels = 1:12,
+                        labels = month.abb))) +
+  geom_bar() +
+  scale_x_discrete(name = "Month",
+                   drop = FALSE)
 
-
+#show the plot in the light theme
+plot1 <- theme_light()
 ```
 
 
@@ -255,7 +277,7 @@ PeterPaul.chem.nutrients %>%
              nrow = 2) +
   xlab("Day of Year") +
   ylab("Temperature") +
-  labs(color = "Year")
+  labs(color = "Year") 
 
 #2. 
 # Plot temperature by date. Color your points by depth.
@@ -275,8 +297,6 @@ PeterPaul.chem.nutrients %>%
   xlab("Sample Date") +
   ylab("Temperature") +
   labs(color = "Depth")
-  
-
 
 ```
 ## Plotting the relationship between two continuous variables: Scatterplot
@@ -296,7 +316,8 @@ EPAair %>%
   geom_point(alpha = 0.5) +
   geom_smooth(method = "lm",
               se = FALSE) +
-  theme(legend.position = "right")
+  theme(legend.position = "right") +
+  my_theme
 
 ```
 
@@ -310,6 +331,27 @@ Exercise: Plot distributions of AQI values for EPAair.
 # Create several types of plots depicting PM2.5, divided by year. 
 # Choose which plot displays the data best and justify your choice. 
 
+EPAair %>%
+  ggplot(aes(x = factor(Year),
+             y = PM2.5,
+             color = factor(Year))) +
+  geom_boxplot() +
+  labs(x = "Year",
+       color = "Year")
+
+EPAair %>%
+  ggplot(aes(x = PM2.5, 
+             y = factor(Year))) +
+  geom_violin() +
+  #geom_dotplot(size = 0.2)
+  #geom_density_ridges(aes(fill = as.factor(Year)))
+  ylab("Year") +
+  labs(fill = "Year")
+
+EPAair %>%
+  ggplot(aes(x = PM2.5)) +
+  geom_histogram() +
+  facet_wrap("Year")
 ```
 
 
@@ -330,7 +372,5 @@ Neonics <- read.csv(
 
 ggplot(Neonics) +
   geom_bar(aes(x = Endpoint))
-
-
 
 ```
