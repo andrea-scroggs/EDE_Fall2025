@@ -5,10 +5,13 @@ runtime: shiny
 ---
   
 ```{r, echo = FALSE}
-numericInput("n",
+#the interface
+numericInput("the_input",
 "How many cars?", 5)
+
 renderTable({
-head(cars, input$n)
+head(cars, input$the_indput)
+  
 })
 ```
 
