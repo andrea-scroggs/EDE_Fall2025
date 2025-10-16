@@ -55,8 +55,8 @@ nutrient_data_tn <- nutrient_data %>%
 ## Report the summary
 
 ```{r create tables, echo=FALSE}
-knitr::kable(nutrient_data_tn.caption = "Summary of Total Nitrogen")
+knitr::kable(nutrient_data_tn, caption = "Summary of Total Nitrogen")
 
-knitr::kable(nutrient_data_tn.caption = "Another Summary of Total Nitrogen")
+knitr::kable(nutrient_data_tn, caption = "Another Summary of Total Nitrogen")
 ```
 
