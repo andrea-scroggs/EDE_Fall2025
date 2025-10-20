@@ -4,6 +4,8 @@ author: "Andi Scroggs"
 date: "Fall 2025"
 output: pdf_document
 toc: TRUE
+editor_options: 
+  chunk_output_type: console
 ---
 
 ## Objectives:
