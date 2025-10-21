@@ -1,11 +1,14 @@
 ---
-title: 'A06 - Crafting Reports'
-author: "Andi Scroggs" 
+title: "A06 - Crafting Reports"
+author: "Andi Scroggs"
 date: "Fall 2025"
-output: pdf_document
-toc: TRUE
-editor_options: 
+output:
+  pdf_document: default
+  word_document: default
+toc: true
+editor_options:
   chunk_output_type: console
+lof: true
 ---
 
 ## Objectives:
@@ -52,6 +55,7 @@ library(tidyverse)
 library(lubridate)
 library(here)
 library(knitr)
+library(cowplot)
 
 #Import EPA data (from the processed_KEY folder) & fix dates
 epa_data <- read.csv(
@@ -78,7 +82,7 @@ Customize the chunk options such that the code is run but is not displayed in th
 >
 > -   If your output table spans across two pages, try inserting a page break in the markdown just before your code chunk.
 
-```{r data.summary}
+```{r data.summary, echo=FALSE, message=FALSE, warning=FALSE}
 #Compute mean PM2.5 concentration for each county, sorted by value
 summary_PM25 <- epa_data %>% 
   drop_na(PM2.5) %>% 
@@ -97,6 +101,10 @@ summary_Ozone <- epa_data %>%
 #Use the `kable` function to produce the 2 tables in markdown format
 knitr::kable(summary_PM25, caption = "Mean Particulates (2.5mm)", 
              col.names = c("County", "$\\mu g/m^3$"), digits = 2)
+```
+\newpage
+```{r kable function, echo=FALSE, message=FALSE, warning=FALSE}
+
 knitr::kable(summary_Ozone, caption = "Mean Ozone", 
              col.names = c("County", "µg/m3"), digits = 2)
 ```
@@ -107,7 +115,7 @@ knitr::kable(summary_Ozone, caption = "Mean Ozone",
 
 Below this paragraph, but above the horizonal line (`---`), create two separate code chunks that create boxplots of the distribution of Ozone levels by month using, one for only records collected in 2018 and one for records in 2019. Customize the chunk options such that the final figures are displayed but not the code used to generate the figures. In addition, align the plots on the left side of the page and set the figure heights so both plots fit on the same page with minimal space remaining. Lastly, add a `fig.cap` chunk option to add a caption (title) to your plot that will display underneath the figure.
 
-```{r monthly ozone 2018, echo=FALSE, fig.cap='Monthly Ozone Concentration in 2018'}
+```{r monthly ozone 2018, echo=FALSE, fig.cap='Monthly Ozone Concentration in 2018', message=FALSE, warning=FALSE, fig.height=4}
 #boxplot for ozone levels by month in 2018
 ozone2018 <- epa_data %>%
   filter(Year == "2018") %>%
@@ -116,15 +124,15 @@ ozone2018 <- epa_data %>%
                               levels = 1:12,
                               labels = month.abb),
                    y = Ozone)) +
-  xlab("Month") +
-  ylab("Concentration (µg/m3)") +
-  ggtitle("Monthly Ozone Concentration in 2018")
-  
-  
+  labs(x = "Month", 
+       y = "Concentration (µg/m3)",
+       title = "Monthly Ozone Concentration in 2018") +
+  theme(plot.margin = margin(2, 2, 2, 0))
+
 print(ozone2018)
 ```
 
-```{r monthly ozone 2019, echo=FALSE}
+```{r monthly ozone 2019, echo=FALSE, fig.cap='Monthly Ozone Concentration in 2019', message=FALSE, warning=FALSE, fig.height=4}
 #boxplot for ozone levels by month in 2019
 ozone2019 <- epa_data %>%
   filter(Year == "2019") %>%
@@ -133,9 +141,10 @@ ozone2019 <- epa_data %>%
                               levels = 1:12,
                               labels = month.abb),
                    y = Ozone)) +
-  xlab("Month") +
-  ylab("Concentration (µg/m3)") +
-  labs("Monthly Ozone Concentrationin 2019")
+  labs(x = "Month", 
+       y = "Concentration (µg/m3)",
+       title = "Monthly Ozone Concentration in 2019") +
+  theme(plot.margin = margin(2, 2, 2, 0))
 
 print(ozone2019)
 ```
@@ -149,3 +158,7 @@ print(ozone2019)
 Add a table of contents and list of figures to your document and knit to a PDF. Submit your PDF to Sakai, but also be sure to commit and push your Rmd file used to create this knit document to GitHub. In the section below, add a link to your GitHub repository. **Lastly, add the statement that you did not use AI in the completion of this assignment followed by your name and the date.**
 
 ## Git Repository
+
+I did not use AI in the completion of this assignment.
+- Andi Scroggs 
+October 20, 2025
