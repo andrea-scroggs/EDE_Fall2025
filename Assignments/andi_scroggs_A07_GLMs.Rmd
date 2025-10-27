@@ -102,8 +102,7 @@ summary(temp_depth_lin_reg)
 
 8. Interpret your model results in words. Include how much of the variability in temperature is explained by changes in depth, the degrees of freedom on which this finding is based, and the statistical significance of the result. Also mention how much temperature is predicted to change for every 1m change in depth. 
 
-> Answer:
-
+> Answer: The results of my model shows that around 73%-74% of the variability in lake temperature is explained by the depth and the rest is explained by other variables. The degrees of freedom are used to calculate the variation in the data based on the independent variables. For this study the degrees of freedom are 3.835 on 9726 degrees of freedom. The small p-value indicates that there is a small chance to see a strong relationship just by chance if depth were to have no impact on temperature. For every 1 meter change in depth, the coeficcient is -1.94621 meaning that when the depth increases by 1 meter, the temperature will decrease by -1.94621 degrees Celcius. 
 
 ---
 
@@ -124,14 +123,12 @@ step(predict_temp_AIC)
 #10
 predict_temp_AIC2 <- lm(data = NTL_LTER_chem_phys_wrangled, 
                        temperature_C ~ year4 + daynum + depth)
-
+summary(predict_temp_AIC2)
 ```
 
 11. What is the final set of explanatory variables that the AIC method suggests we use to predict temperature in our multiple regression? How much of the observed variance does this model explain? Is this an improvement over the model using only depth as the explanatory variable?
 
-> Answer: 
-
-
+> Answer: The final set of explanatory variables that the AIC method suggest are all three variables: year4, depth, and daynum. The three variables are the most useful to predict temperature and have the most significance on temperature. Daynum and depth have the smallest p-values meaning that they are more significant to predicting temperature than the variable year4. There is some significance of the variable year4 but less than that of daynum and depth. The Sum of Sq explains the amount that the error will occur if that variable is removed. So if we were to remove depth, the amount that the variable depth is explaining will in change by 404475, which is a lot. This shows that depth accounts for a lot of variation in temperature and is an important factor in determining temperature. Year4 has the smallest Sun of Sq meaning that it does not influence temperature as much as the other variables. The Sum of Sq is also directly tied to r-squared, thus a higher Sum of Sq leads to a higher r-squared. When running a multiple regression on the reccommended set of variables, it produced an r-squared equalling 0.741 meaning that with only depth and daynum variables, the variance is explained around 74% of the time. 
 
 ---
 ## Analysis of Variance
@@ -144,7 +141,7 @@ NTL_LTER_Lake_temps <- NTL_LTER_chem_phys_wrangled %>%
   group_by(lakename) %>%
   summarise(averagetemperature_c = mean(temperature_C))
 
-Lake_temps_ANOVA <- aova(data = NTL_LTER_chem_phys_wrangled, 
+Lake_temps_ANOVA <- aov(data = NTL_LTER_chem_phys_wrangled, 
                                   temperature_C ~ lakename)
 summary(Lake_temps_ANOVA)
 
@@ -156,8 +153,7 @@ summary(Lake_temps_lm)
 
 13. Is there a significant difference in mean temperature among the lakes? Report your findings. 
 
-> Answer: 
-
+> Answer: Yes there is a difference in mean temperature among the lakes. You can tell from the p-value of the ANOVA is very small indicating that there is a difference between the mean lake temperarures. All of the lakes have a mean temperature with different amounts of significance based on the lakes individuals p-values. There are eight degrees of freedom for the lake name variables. 
 
 14. Create a graph that depicts temperature by depth, with a separate color for each lake. Add a geom_smooth (method = "lm", se = FALSE) for each lake. Make your points 50 % transparent. Adjust your y axis limits to go from 0 to 35 degrees. Clean up your graph to make it pretty. 
 
@@ -173,7 +169,6 @@ NTL_LTER_chem_phys_wrangled %>%  ggplot(aes(x = depth,
        y = 'Temperature (C)',
        color = 'Lake Name') +
   mytheme1
-
 ```
 
 15. Use the Tukey's HSD test to determine which lakes have different means.
@@ -181,30 +176,27 @@ NTL_LTER_chem_phys_wrangled %>%  ggplot(aes(x = depth,
 ```{r tukey.test}
 #15
 TukeyHSD(Lake_temps_ANOVA)
-
 ```
 
 16.From the findings above, which lakes have the same mean temperature, statistically speaking, as Peter Lake? Does any lake have a mean temperature that is statistically distinct from all the other lakes?
 
->Answer:
+>Answer: You can tell whether or not the mean temperatures are statistically similar from the p adj. If the p adj is lower then 0.05 then it is different. If it is greater than or equal to 0.05 then the mean temperature is the same/similar. Based on the data, it looks like Ward Lake and Paul Lake are similar in mean temperatures, statistically speaking. Most of the lakes are statistically similar to at least one other lake; there are no lakes that are not similar to any of the other lakes. 
 
- 
 
 17. If we were just looking at Peter Lake and Paul Lake. What's another test we might explore to see whether they have distinct mean temperatures? 
 
->Answer: 
-
+>Answer: Another test that could be performed to explore the mean temperatures of Peter Lake and Paul Lake is a two-sample t-test. A two sample t-test would allow us to compare the means of both lakes. 
 
 
 18. Wrangle the July data to include only records for Crampton Lake and Ward Lake. Run the two-sample T-test on these data to determine whether their July temperature are same or different. What does the test say? Are the mean temperatures for the lakes equal? Does that match you answer for part 16?
 
 ```{r t.test}
 NTL_LTER_Crampton_Ward_lakes <- NTL_LTER_chem_phys_wrangled %>%
-  filter(lakename == 'Crampton Lake' | 'Ward Lake')
+  filter(lakename %in% c('Crampton Lake', 'Ward Lake'))
 
 CW_lakes_twosample_ttest <- t.test(NTL_LTER_Crampton_Ward_lakes$temperature_C ~ NTL_LTER_Crampton_Ward_lakes$lakename)
 
 CW_lakes_twosample_ttest
 ```
 
->Answer: 
+>Answer: The two-sample t-test conducted shows the mean temperature in July for lakes Crampton and Ward. The mean temperatures for the two lakes are slightly similar to each other. The p-value is larger than 0.05 meaning that we fail to reject the null and there is not a significant difference in the mean temperatures. Not rejecting the null hypothesis matches with question 16 where the p adj. value is larger than 0.05 for Ward Lake and Crampton Lake. 
