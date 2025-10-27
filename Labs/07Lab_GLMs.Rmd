@@ -48,8 +48,45 @@ Create three plots, each with appropriately formatted axes and legends. Choose a
 
 ```{r}
 #Exercise 1:
+##density plot
+O3.density <- EPAair %>%
+  ggplot(aes(x = Ozone,
+             fill = as.factor(Year))) +
+  geom_density(alpha = 0.5)+
+  scale_fill_manual(values = c('darkgreen', 'darkblue')) +
+  labs(x = 'Ozone AQI Value', 
+       y = "Density",
+       fill =  "") +
+  mytheme
+print(O3.density)
 
+##boxplots
+O3.boxplot <- ggplot(EPAair, aes(x = as.factor(Year),
+                                 y = Ozone)) +
+  geom_boxplot() +
+  stat_summary(geom = 'text',
+               fun = max,
+               vjust = -1,
+               size = 4,
+               label = a('b', 'a')) +
+  labs(x = "",
+       y = 'Ozone AQI Value')
+print(O3.boxplot)
 
+##violin plots
+O3.violin <- ggplot(EPAair, 
+                    aes(x = as.factor(Year),
+                        y = Ozone)) + 
+  geom_violin(draw_quantiles = 0.5) +
+  stat_summary(geom = 'text',
+               fun = max,
+               vjust = -1,
+               size = 4,
+               label = c('b','a')) +
+  labs(x = "",
+       y = "Ozone AQI Value") +
+  ylim(0,150)
+print(O3.violin)
 ```
 
 ## Linear Regression
@@ -59,39 +96,62 @@ Important components of the linear regression are the correlation and the R-squa
 For the NTL-LTER dataset, can we predict PM2.5 from Ozone?
 
 ```{r}
-
 #Exercise 2: Run a linear regression PM2.5 by Ozone. Find the p-value and R-squared value. 
+PM2.5byO3_regression <- lm(EPAair$PM2.5 ~ EPAair$Ozone)
+summary(PM2.5byO3_regression)
+```
+r squared is 0.1316 or 13% - only 13% of the variablility of PM2.5 is being explained by the Ozone data -- we need to figure out where else the variability is coming from because for an x-value the y-values can range from 0-75.
+p-value is 2.2e-16
 
 
-
+```{r}
 #Exercise 3: Build a scatterplot. Add a line and standard error for the linear regression. Add the regression equation to the plot
 
-
+PM2.5_O3_scatter <- ggplot(EPAair, aes(x = Ozone,
+                                       y = PM2.5)) +
+  geom_point() +
+  geom_smooth(method = 'lm',
+              col = 'blue') + 
+  geom_text(x = 100,
+            y = 75,
+            label = expression('PM2.5=0*Ozone+15.64'))
+print(PM2.5_O3_scatter)
 
 ```
-
 
 ## AIC to select variables
 
 What other variables can we add to improve model?
 
 ```{r}
-
+library(corrplot)
+library(dplyr)
 #Exercise 4: Build correlation plots and identify more possible explanatory variables to add to the regression.
 
-
-
+EPAair_plots <- EPAair %>%
+  select(mean_Lat:Ozone) %>%
+  na.omit()
+EPAair_corrplots <- cor(EPAair_plots)
+corrplot(EPAair_corrplots, method = 'ellipse')
+corrplot.mixed(EPAair_corrplots, upper = 'ellipse')
 
 #Exercise 5: Choose a model by AIC in a Stepwise Algorithm. Do the results from AIC match the variables you selected on Exercise 4?
 
-
-
+ozonebyALL.regression <- lm(data = EPAair_corrplots,
+                            PM2.5 ~ Ozone + Year + Month + mean_Lng + mean_Lat)
+step(ozonebyALL.regression)
 
 #Exercise 6: Run another regression using the variables selected on Exercise 6. Compare r-squared value with the one from Exercise 2. 
-
+ozone.BEST.regression <- lm(data = EPAair_corrplots,
+                            PM2.5 ~ Ozone + Month + mean_Lng + mean_Lat)
+summary(ozone.BEST.regression)
 ```
+Exercise 5:
+mean_Lng, Month, mean_Lat, and Ozone are the variables that make explain the relationship the best. 
 
-
+Exercise 6:
+Balance between adding more variables and the complexity of the model. 
+Look at the adjusted r squared to understand your model and what would be the best to explain it. 
 
 ## Litter Exercise
 
