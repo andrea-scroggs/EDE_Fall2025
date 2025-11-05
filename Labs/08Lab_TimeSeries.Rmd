@@ -57,19 +57,19 @@ Temp_BR <- read.csv(here("Data/Raw/tas_1901_2016_BRA.csv"), stringsAsFactors = T
 
 Rainfall_BR_processed <-
   Rainfall_BR %>% 
-  rename( Rainfall = Rainfall....MM.) %>% 
+  rename(Rainfall = Rainfall....MM.) %>% 
   separate(Statistics,c("Null","Month","Null2")," ") %>% 
   #my() changes the month name to a number month
-  mutate( Date = my(paste0(Month,"-",Year))) %>% 
+  mutate(Date = my(paste0(Month,"-",Year))) %>% 
   select(Date,Rainfall)
 
 #Exercise 3: Repeat exercise 2 to the temperature dataset.
 Temp_BR_processed <-
   Temp_BR %>% 
-  rename( Temperature_C = Temperature....Celsius.) %>% 
-  separate(Statistics,c("Null","Month","Null2")," ") %>% 
-  mutate( Date = my(paste0(Month,"-",Year))) %>% 
-  select(Date,Temperature_C)  
+  rename(Temperature_C = Temperature....Celsius.) %>% 
+  separate(Statistics, c("Null", "Month", "Null2"), " ") %>% 
+  mutate(Date = my(paste0(Month,"-",Year))) %>% 
+  select(Date, Temperature_C)  
 
 
 #Exercise 4: Join the temperature and rainfall into one tidy data frame with 3 columns: Date, Rainfall and Temperature.
