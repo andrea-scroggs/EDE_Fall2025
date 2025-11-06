@@ -78,7 +78,7 @@ st_crs(epa_pm25_sites_sf)
 
 #Plot the data
 ggplot(data=epa_pm25_sites_sf) +
-  geom_sf()
+  geom_sf(aes(color = meanPM))
 ```
 
 ## 2.2 Reading shapefiles into R with `sf`
@@ -116,16 +116,18 @@ mapView(counties_sf)
 
 ```{r read HUCs shapefile}
 #Read the shapefile into an sf dataframe named "huc8_sf"
-huc8_sf <- 
+huc8_sf <- st_read(here('Data/Spatial/NCHUC8.shp'))
 
 #Reveal the column names
-
+colnames(huc8_sf)
 
 #Check the CRS
-
+st_crs(huc8_sf)
 
 #View the data as a map, colored by the acreage in each
-
+ggplot(data = huc8_sf) +
+  geom_sf(aes(fill = ACRES)) +
+  scale_fill_viridis_c()
 
 ```
 
@@ -136,11 +138,21 @@ huc8_sf <-
 
 ```{r Select the Upper Neuse HUC 8}
 #Read the shapefile into an sf dataframe
-
+upper_neuse_sf <- st_read(here('Data/Spatial/NCHUC8.shp')) %>% 
+  filter(SUBBASIN == 'Upper Neuse')
 
 #Create a map
+mapview(huc8_sf, col.regions = 'grey') +
+  mapview(upper_neuse_sf, 
+          col.regions = 'yellow', 
+          color = 'blue')
+#OR
 
-
+ggplot() +
+  geom_sf(data = huc8_sf, color = 'grey') +
+  geom_sf(data = upper_neuse_sf, 
+          color = 'blue', 
+          fill = 'yellow')
 ```
 
 ---
@@ -217,13 +229,27 @@ ggplot() +
 
 ```{r}
 #Import data, setting HUC_12 to be factors, and computing a HUC_8 column
+wind_df <- read.csv('https://raw.githubusercontent.com/ENV859/EnviroAtlasData/main/Wind_Energy.csv',
+                    stringsAsFactors = TRUE,
+                    colClasses = c('HUC_12' = 'factor')) %>%
+  mutate(huc8 = substr(HUC_12, 
+                       start = 0, 
+                       stop = 8)) %>%
+  group_by(huc8) %>%
+  summarize(sum_energy = sum(AvgWindEnergy))
 
-  
 #Join to HUC_8 features
-
+huc8_wind_sf <- huc8_sf %>%
+  left_join(wind_df,
+            by = c('HUC_8' = 'huc_8'))
 
 #View the outputs
+mapview(huc8_wind_sf, zcol = 'sum_energy')
 
+huc8_wind_sf %>%
+  ggplot(aes(fill = sum_energy)) +
+  geom_sf() +
+  scale_fill_viridis_c()
 
 ```
 
@@ -247,14 +273,18 @@ mapview(state_sf)
 
 ```{r Aggregate the HUC data on an attribute, saving as huc2_sf}
 #List the unique values in the DWQ_Basin field
-
+unique(huc8_sf$DWQ_Basin)
 
 #Summarize on DWQ Basin value
-huc2_sf <- 
+huc2_sf <- huc8_sf %>%
+  group_by(DWQ_Basin) %>%
+  summarize(ACRES = sum(ACRES))
   
-
 #Map the data
-
+huc2_sf %>%
+  ggplot(aes(fill = ACRES)) +
+  geom_sf() +
+  scale_fill_viridis_b()
 
 ```
 
@@ -334,14 +364,20 @@ mapview(neuse_counties_sf, zcol='Area_m2')
 #Select the Triangle County from the 
 triCo <- counties_sf_utm %>% 
   filter(NAME %in% c("Durham","Wake", "Orange", "Chatham")) 
-
-  
 #Grab the intersecting HUC_8s
+selected_hucs = huc8_sf_utm %>%
+  st_filter(triCo)
 
-
+ggplot() +
+  geom_sf(data = selected_hucs, 
+          fill = 'grey') +
+  geom_sf(data = triCo, 
+          color = 'red',
+          alpha = 0)
 
 #Intersect the HUC_8s
-
+clipped_hucs = huc8_sf_utm %>%
+  st_intersection(triCo)
 
 ```
 
@@ -422,7 +458,11 @@ mapView(counties_sf[resultMask,])
 > Questions: how might we use the `st_buffer` function to show all counties within 30km of the site?
 
 ```{r Select counties within a 30 km area from the site}
+#buffer the site
 
+#select counties that intersect the site
+
+#plot the selected counties
                             
 ```
 
