@@ -110,7 +110,32 @@ ggplot(gage_data,aes(x=datetime,y=discharge_cfs)) +
 > Alter the above code so that it plots the last *24* days of flow for gage *02085070*
 
 ```{r EXERCISE - pull.and.plot.other.discharge.data}
+#Set the URL
+theURL_e1 <- 
+  'https://waterdata.usgs.gov/nwis/uv?search_site_no=02085070&period=24&format=rdb'
 
+#Get the data, which starts on line 27
+gage_data_e1 <- read.table(
+  theURL_e1,
+  skip = 26, #Skip non-data lines
+  header=TRUE,
+  sep='\t',
+  stringsAsFactors = T) 
+
+#Update the column headers
+colnames(gage_data_e1) = c(
+  "agency_cd", "site_no", "datetime", "tz_cd",
+  "discharge_cfs", "89192_00060_cd", "gage_ht_ft", "89193_00065_cd")
+
+#Tidy the data
+gage_data_e1 <- gage_data_e1 %>% 
+  select(datetime, discharge_cfs, gage_ht_ft) %>% 
+  mutate(datetime = ymd_hm(datetime))
+
+#Plot
+ggplot(gage_data_e1,aes(x=datetime,y=discharge_cfs)) + 
+  geom_line() +
+  labs(x = "Date",y = "Discharge (cfs)")
 ```
 
 
@@ -173,7 +198,7 @@ You'll also need to look up the IDs of the variables you want to extract. Those 
 
 ```{r}
 #Apply the API key
-#census_api_key("d4ad7874c996c7a83fec0a81466309ddc07d8e22a", install = TRUE)
+census_api_key("d4ad7874c996c7a83fec0a81466309ddc07d8e22a", install = TRUE)
 
 nc_pop <- 
   get_acs(geography = "county",
@@ -212,16 +237,23 @@ The RVest scraping workflow is as follows:
 
 ```{r EXERCISE - scrape.data.manually eval=FALSE}
 #1 Link to the web site using read_html
-the_website <- 
+the_website <- 'https://www.eia.gov/electricity/state/'
 
 #2&3 Locate elements and read their text attributes into variables
-the_states <- 
-the_price <- 
-the_capacity <- 
-net_generation <- 
-total_retail <- 
+the_states <- the_website %>% html_nodes('')
+the_price <- the_website %>% html_nodes('')
+the_capacity <- the_website %>% html_nodes('')
+net_generation <- the_website %>% html_nodes('')
+total_retail <- the_website %>% html_nodes('')
   
 #3 Construct a dataframe from the values
+df <- data.frame(
+  state = the_states,
+  price = as.numeric(the_price),
+  capacity = as.numeric(gsub(",","",the_capacity)),
+  net_get = net_generation,
+  total = total_retail
+)
 
 ```
 
