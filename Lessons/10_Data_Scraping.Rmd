@@ -94,7 +94,7 @@ With this id known, we can extract it's value in a two-step process. First we us
 
 ```{r scrape.some.data}
 the_registrant <- webpage %>% 
-  html_nodes(".table tr:nth-child(1) td:nth-child(2)") %>% 
+  html_nodes("table tr:nth-child(1) td:nth-child(2)") %>% 
   html_text()
 the_registrant
 ```
@@ -107,7 +107,7 @@ In the code chunk below, see if you can extract the Facility Name and Facility T
 
 ```{r scraping.exercise.1}
 the_facility_name <- webpage %>% 
-  html_nodes() %>% 
+  html_nodes('tr:nth-child(2) th+ .left:nth-child(2)') %>% 
   html_text()
 the_facility_name
 
